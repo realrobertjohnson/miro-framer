@@ -34,27 +34,8 @@ function sortLeftRightTopBottom(items) {
   }
 }
 
-/*
-
-According to:
-https://developers.miro.com/docs/web-sdk-comparison-guide#an-example---converting-sticky-notes-to-shapes
-
-This:
-   let itemWidth = item.bounds.width
-   let itemHeight = item.bounds.height
-
-Should now just be this:
-   let itemWidth = item.width
-   let itemHeight = item.height
-
-Create a frame:
-https://developers.miro.com/docs/websdk-reference-board#createframe
-
-
-*/
-
 //export const createFrames = async () => {
-  async function createFrames (){
+ async function createFrames (){
  let currentSelection =  await miro.board.getSelection()
  let filteredTypes = ["FRAME"]
  let filteredSelection = currentSelection.filter(item => !filteredTypes.includes(item.type))
@@ -80,18 +61,26 @@ https://developers.miro.com/docs/websdk-reference-board#createframe
     console.log("newFrame: ",newFrame)
    arrayOfFramesToCreate.push(newFrame)
  })
-  
   await miro.board.widgets.create(arrayOfFramesToCreate)
   await miro.board.widgets.bringForward(filteredSortedSelection)
   let idMappedFilteredSelection = filteredSortedSelection.map(item => item.id) 
   await miro.board.selection.selectWidgets(idMappedFilteredSelection)
 }
 
+async function newFramerNotification(){
+  const infoMessage = {
+    message: 'New Framer version <a href="https://framer.mirohero.ca" target="_blank">here</a>',
+  };
+  const infoNotification = `${infoMessage.message}`;
+  await miro.board.notifications.showInfo(infoNotification);
+  console.log(infoMessage)
+}
+
 const init = () => {
   const { board } = window.miro;
   board.ui.on("icon:click", async () => {
     createFrames();
+    //newFramerNotification();
   });
 };
-
 init();
