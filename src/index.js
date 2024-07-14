@@ -1,5 +1,3 @@
-//import { executeFramer } from "./framer";
-
 function sortLeftRightTopBottom(items) {
   if (!items) {
     return [];
@@ -10,10 +8,13 @@ function sortLeftRightTopBottom(items) {
   if (items.length > 0) {
     
     items.sort(function compareLeft(a, b) {
-      if (a.bounds.left < b.bounds.left) {
+      const aLeft = a.x - (a.width/2)
+      const bLeft = b.x - (b.width/2)
+     
+      if (aLeft < bLeft) {
         return -1;
       }
-      if (a.bounds.left > b.bounds.left) {
+      if (aLeft > bLeft) {
         return 1;
       }
       // a must be equal to b
@@ -21,10 +22,13 @@ function sortLeftRightTopBottom(items) {
     });
     
     items.sort(function compareTops(a, b) {
-      if (a.bounds.top < b.bounds.top) {
+      const aTop = a.y - (a.height/2)
+      const bTop = b.y - (b.height/2)
+      
+      if (aTop < bTop) {
         return -1;
       }
-      if (a.bounds.top > b.bounds.top) {
+      if (aTop > bTop) {
         return 1;
       }
       // a must be equal to b
@@ -34,37 +38,44 @@ function sortLeftRightTopBottom(items) {
   }
 }
 
-//export const executeFramer = async () => {
  async function executeFramer (){
  let currentSelection =  await miro.board.getSelection()
- let filteredTypes = ["FRAME"]
+ 
+ if (currentSelection.length === 0) {
+     await miro.board.notifications.showInfo('You need to select something')
+     return
+ }
+ 
+ let filteredTypes = ["frame"]
  let filteredSelection = currentSelection.filter(item => !filteredTypes.includes(item.type))
  let filteredSortedSelection = sortLeftRightTopBottom(filteredSelection)
- let arrayOfFramesToCreate = []
- filteredSortedSelection.forEach((item, i) => {
-   let childrenIds = [filteredSortedSelection.id]
+ const newFrames = []
+  
+ for(let i = 0; i < filteredSortedSelection.length; i++) {
+   const item = filteredSortedSelection[i]
+   let childrenIds = [item.id]
    let itemWidth = item.width
    let itemHeight = item.height
    let itemX = item.x
    let itemY = item.y
-   console.log("width: ", itemWidth)
-   console.log("height: ", itemHeight)
-   let newFrame = 
-     {type:"FRAME", 
+   //console.log("width: ", itemWidth)
+   //console.log("height: ", itemHeight)
+   const newFrame = await miro.board.createFrame({
       x: itemX, 
       y: itemY,
-      childrenIds: childrenIds,
       width: itemWidth,
       height: itemHeight, 
-      title: `Frame ${i+1}`,
-     } 
-    console.log("newFrame: ",newFrame)
-   arrayOfFramesToCreate.push(newFrame)
- })
-  await miro.board.widgets.create(arrayOfFramesToCreate)
-  await miro.board.widgets.bringForward(filteredSortedSelection)
-  let idMappedFilteredSelection = filteredSortedSelection.map(item => item.id) 
-  await miro.board.selection.selectWidgets(idMappedFilteredSelection)
+      title: `Frame ${i+1}`
+    })
+    await newFrame.add(item)
+    newFrames.push(newFrame)
+ }
+ 
+  await miro.board.deselect()
+ 
+  //await miro.board.bringForward(filteredSortedSelection)
+  await miro.board.select({id: newFrames.map(f => f.id)})
+  await miro.board.notifications.showInfo(newFrames.length + ' objects were framed')
 }
 
 async function newFramerNotification(){
@@ -73,7 +84,7 @@ async function newFramerNotification(){
   };
   const infoNotification = `${infoMessage.message}`;
   await miro.board.notifications.showInfo(infoNotification);
-  console.log(infoMessage)
+  //console.log(infoMessage)
 }
 
 const init = () => {

@@ -3,9 +3,9 @@
   "description": "Frame objects.",
   "version": "0.2.0",
   "scripts": {
-    "start": "vite",
+    "start": "vite --port 4173",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview"    
   },
   "engines": {
     "node": "20.9.0"
