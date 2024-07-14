@@ -42,7 +42,7 @@ function sortLeftRightTopBottom(items) {
  let currentSelection =  await miro.board.getSelection()
  
  if (currentSelection.length === 0) {
-     await miro.board.notifications.showInfo('You need to select something')
+     await miro.board.notifications.showError('No objects selected. Select something and try again.')
      return
  }
  
