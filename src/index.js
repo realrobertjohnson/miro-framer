@@ -1,4 +1,4 @@
-//import { createFrames } from "./framer";
+//import { executeFramer } from "./framer";
 
 function sortLeftRightTopBottom(items) {
   if (!items) {
@@ -34,8 +34,8 @@ function sortLeftRightTopBottom(items) {
   }
 }
 
-//export const createFrames = async () => {
- async function createFrames (){
+//export const executeFramer = async () => {
+ async function executeFramer (){
  let currentSelection =  await miro.board.getSelection()
  let filteredTypes = ["FRAME"]
  let filteredSelection = currentSelection.filter(item => !filteredTypes.includes(item.type))
@@ -79,7 +79,7 @@ async function newFramerNotification(){
 const init = () => {
   const { board } = window.miro;
   board.ui.on("icon:click", async () => {
-    createFrames();
+    executeFramer();
     //newFramerNotification();
   });
 };
