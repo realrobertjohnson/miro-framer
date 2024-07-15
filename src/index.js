@@ -58,8 +58,6 @@ function sortLeftRightTopBottom(items) {
    let itemHeight = item.height
    let itemX = item.x
    let itemY = item.y
-   //console.log("width: ", itemWidth)
-   //console.log("height: ", itemHeight)
    const newFrame = await miro.board.createFrame({
       x: itemX, 
       y: itemY,
@@ -72,26 +70,15 @@ function sortLeftRightTopBottom(items) {
  }
  
   await miro.board.deselect()
- 
-  //await miro.board.bringForward(filteredSortedSelection)
   await miro.board.select({id: newFrames.map(f => f.id)})
   await miro.board.notifications.showInfo(newFrames.length + ' objects were framed')
-}
-
-async function newFramerNotification(){
-  const infoMessage = {
-    message: 'New Framer version <a href="https://framer.mirohero.ca" target="_blank">here</a>',
-  };
-  const infoNotification = `${infoMessage.message}`;
-  await miro.board.notifications.showInfo(infoNotification);
-  //console.log(infoMessage)
 }
 
 const init = () => {
   const { board } = window.miro;
   board.ui.on("icon:click", async () => {
     executeFramer();
-    //newFramerNotification();
   });
 };
+
 init();
