@@ -75,10 +75,15 @@ async function executeFramer() {
   await miro.board.notifications.showInfo(newFrames.length + ' objects were framed')
 }
 
+async function newFramerVersion() {
+  await miro.board.notifications.showError('Framer is now <a href="https://multiframe.ca" target="_blank">MultiFrame</a>!');
+}
+
 const init = () => {
   const { board } = window.miro;
   board.ui.on("icon:click", async () => {
-    executeFramer();
+    //executeFramer();
+    newFramerVersion();
   });
 };
 
